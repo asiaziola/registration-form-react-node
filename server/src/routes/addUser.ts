@@ -1,7 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response, NextFunction } from 'express'
 
-const router = express.Router();
+const router = express.Router()
 
-router.post('/', async (req: Request, res: Response, next: NextFunction) => {});
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {})
 
-export default router;
+export default router
