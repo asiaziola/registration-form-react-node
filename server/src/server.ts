@@ -1,15 +1,29 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import { appRouter } from './routes/index'
+import express from 'express';
+import dotenv from 'dotenv';
+import { appRouter } from './routes/index';
+import bodyParser from 'body-parser';
+import { connectToDb } from './database/connectToDb';
+import { initDb } from './database/initDb';
 
-const app = express()
-const port = process.env.PORT || 3001
+(async () => {
+  require('dotenv').config();
 
-app.use(express.json())
-app.use(appRouter)
+  const db = connectToDb();
+  await initDb(db);
 
-const server = app.listen(port, function () {
-  console.log('App listening on port: ' + port)
-})
+  const app = express();
+  const port = process.env.PORT || 3001;
 
-export { server }
+  app.use(express.json());
+  app.use(bodyParser.json());
+  app.use(
+    bodyParser.urlencoded({
+      extended: true,
+    })
+  );
+  app.use(appRouter);
+
+  app.listen(port, function () {
+    console.log('App listening on port: ' + port);
+  });
+})();
