@@ -7,7 +7,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "outDir": "dist",
-    "types": ["node"],
+    "types": ["jest", "node"],
     "resolveJsonModule": true,
     "lib": ["es2019"],
     "jsx": "react-jsx",

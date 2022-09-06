@@ -1,9 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import { validations } from './validations/user';
 import { addUserController } from './controller/user';
 
-const router = express.Router();
+const router = express();
 
-router.post("/", validations, addUserController);
+router.post('/', validations, addUserController);
 
 export default router;
