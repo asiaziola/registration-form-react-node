@@ -2,13 +2,12 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { appRouter } from './routes/index';
 import bodyParser from 'body-parser';
-import { connectToDb } from './database/connectToDb';
+import { db } from './database/connectToDb';
 import { initDb } from './database/initDb';
 
 (async () => {
   require('dotenv').config();
 
-  const db = connectToDb();
   await initDb(db);
 
   const app = express();
@@ -24,6 +23,6 @@ import { initDb } from './database/initDb';
   app.use(appRouter);
 
   app.listen(port, function () {
-    console.log('App listening on port: ' + port);
+    console.log(`App listening on port: ${port}`);
   });
 })();

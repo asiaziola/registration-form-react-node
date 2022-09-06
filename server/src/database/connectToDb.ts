@@ -1,6 +1,6 @@
 import { knex, Knex } from 'knex';
 
-export const connectToDb = (): Knex => {
+const connectToDb = (): Knex => {
   return knex({
     client: 'pg',
     connection: {
@@ -12,3 +12,5 @@ export const connectToDb = (): Knex => {
     },
   });
 };
+
+export const db = connectToDb();
