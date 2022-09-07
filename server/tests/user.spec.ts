@@ -1,38 +1,63 @@
 import request from 'supertest';
 import app from '../src/server';
 
-import knex from 'knex';
-import mockDb from 'mock-knex';
-const db = knex({
-  client: 'sqlite',
-  useNullAsDefault: true,
+jest.mock('../src/database/connectToDb', () => {
+  let knex = require('knex');
+  const connectToDb = () => {
+    let db = knex({
+      client: 'sqlite3',
+      connection: {
+        filename: ':memory:',
+      },
+      useNullAsDefault: true,
+    });
+    return db;
+  };
+  const db = connectToDb();
+  return { db };
 });
 
-mockDb.mock(db);
+describe('/api/users', () => {
+  beforeAll(async () => {});
 
-describe('POST /api/addUser', () => {
-  afterAll(() => {
-    mockDb.unmock(db);
+  afterAll((done) => {
     jest.resetAllMocks();
+    done();
   });
-  describe('given correct data', () => {
-    test('should respond with a 200 status code', async () => {
-      const response = await request(app)
-        .post('/api/addUser')
-        .send({
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john.doe@email.com',
-          eventDate: '2020-10-09',
-        })
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/);
 
-      expect(response.statusCode).toBe(200);
+  describe('GET when there are no records', () => {
+    test('should respond with a 200 status code', async () => {
+      setTimeout(async () => {
+        const response = await request(app)
+          .get('/api/users')
+          .expect('Content-Type', /json/);
+
+        expect(response.statusCode).toBe(200);
+        expect(response.body).toBe([]);
+      }, 1000);
+    });
+  });
+
+  describe('POST given correct data', () => {
+    test('should respond with a 200 status code', async () => {
+      setTimeout(async () => {
+        const response = await request(app)
+          .post('/api/users')
+          .send({
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@email.com',
+            eventDate: '2020-10-09',
+          })
+          .set('Accept', 'application/json')
+          .expect('Content-Type', /json/);
+
+        expect(response.statusCode).toBe(200);
+      });
     });
 
     test('should specify json in the content type header', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@email.com',
@@ -44,7 +69,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('response should have proper field', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@email.com',
@@ -57,9 +82,9 @@ describe('POST /api/addUser', () => {
     });
   });
 
-  describe('when the data is missing', () => {
+  describe('POST when the data is missing', () => {
     test('should respond with a status code of 400 when eventDate is missing', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@email.com',
@@ -75,7 +100,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('should respond with a status code of 400 when email is missing', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         eventDate: '2020-10-09',
@@ -91,7 +116,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('should respond with a status code of 400 when lastName is missing', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         email: 'john.doe@email.com',
         eventDate: '2020-10-09',
@@ -107,7 +132,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('should respond with a status code of 400 when firstName is missing', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         lastName: 'Doe',
         email: 'john.doe@email.com',
         eventDate: '2020-10-09',
@@ -123,9 +148,9 @@ describe('POST /api/addUser', () => {
     });
   });
 
-  describe('when data is incorrect', () => {
+  describe('POST when data is incorrect', () => {
     test('should respond with a status code of 400 when firstName is invalid', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 123,
         lastName: 'Doe',
         email: 'john.doe@email.com',
@@ -142,7 +167,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('should respond with a status code of 400 when lastName is invalid', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 123,
         email: 'john.doe@email.com',
@@ -159,7 +184,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('should respond with a status code of 400 when email is invalid', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doeemail.com',
@@ -176,7 +201,7 @@ describe('POST /api/addUser', () => {
     });
 
     test('should respond with a status code of 400 when eventDate is invalid', async () => {
-      const response = await request(app).post('/api/addUser').send({
+      const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@email.com',
@@ -190,6 +215,25 @@ describe('POST /api/addUser', () => {
         param: 'eventDate',
         value: 123,
       });
+    });
+  });
+
+  describe('GET when there are no records', () => {
+    test('should respond with a 200 status code', async () => {
+      const response = await request(app)
+        .get('/api/users')
+        .expect('Content-Type', /json/);
+
+      expect(response.statusCode).toBe(200);
+      expect(response.body).toStrictEqual([
+        {
+          email: 'john.doe@email.com',
+          event_date: '2020-10-09',
+          first_name: 'John',
+          id: 1,
+          last_name: 'Doe',
+        },
+      ]);
     });
   });
 });

@@ -1,7 +1,8 @@
-import express from 'express'
-import addUser from './user/user'
+import express from 'express';
+import addUser from './user/user';
 
-const router = express.Router()
+const router = express.Router();
 
-router.use('/api/addUser', addUser)
-export { router as appRouter }
+router.use('/api/users', addUser);
+
+export { router as appRouter };

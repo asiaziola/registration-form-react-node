@@ -10,7 +10,12 @@ export const addUser = async (userData: User) => {
     event_date: eventDate,
   };
 
-  await db('users').insert(userInsert).onConflict('email').ignore();
+  const result = await db('users').insert(userInsert).onConflict('email').ignore();
 
   return userInsert;
+};
+
+export const getUsers = async () => {
+  const result = await db('users').select('*');
+  return result;
 };
