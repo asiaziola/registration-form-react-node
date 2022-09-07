@@ -9,7 +9,6 @@ export const addUserController = async (
   next: NextFunction
 ) => {
   const errors = validationResult(req);
-  console.log(errors);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -19,6 +18,7 @@ export const addUserController = async (
     return res.status(200).json(result);
   } catch (e) {
     res.status(500);
+    console.log(e.message);
     res.json({ errors: e.message });
   }
 };

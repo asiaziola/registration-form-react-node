@@ -10,7 +10,7 @@ export const addUser = async (userData: User) => {
     event_date: eventDate,
   };
 
-  await db('users').insert(userInsert);
+  await db('users').insert(userInsert).onConflict('email').ignore();
 
   return userInsert;
 };
