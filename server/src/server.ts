@@ -4,6 +4,7 @@ import { appRouter } from './routes/index';
 import bodyParser from 'body-parser';
 import { db } from './database/connectToDb';
 import { initDb } from './database/initDb';
+import path from 'path';
 
 require('dotenv').config();
 
@@ -13,6 +14,13 @@ require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3001;
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+app.use(express.static(path.resolve(__dirname, '../../../client/build')));
+
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -21,6 +29,10 @@ app.use(
 );
 app.use(express.json());
 app.use(appRouter);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, '../../../client/build', 'index.html'));
+});
 
 app.listen(port, function () {
   console.log(`App listening on port: ${port}`);

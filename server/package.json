@@ -4,9 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node-dev src/server.ts",
-    "start:prod": "ts-node src/server.ts",
-    "build": "tsc",
+    "start": "node dist/src/server.js",
+    "build": "cd ../client && yarn run build",
+    "build:server": "rm -rf dist && tsc",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "lint:check": "eslint --ext .ts,.tsx .",

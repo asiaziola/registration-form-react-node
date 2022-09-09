@@ -32,7 +32,6 @@ export const getUsersController = async (
     return res.status(200).json(result);
   } catch (e) {
     res.status(500);
-    console.log(e.message);
     res.json({ errors: e.message });
   }
 };

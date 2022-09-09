@@ -218,7 +218,7 @@ describe('/api/users', () => {
     });
   });
 
-  describe('GET when there are no records', () => {
+  describe('GET when there are records', () => {
     test('should respond with a 200 status code', async () => {
       const response = await request(app)
         .get('/api/users')
