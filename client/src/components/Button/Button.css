@@ -1,0 +1,22 @@
+.button-container {
+  text-align: right;
+  margin-top: 3rem;
+}
+
+.form-button {
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.blue {
+  background-color: #89cff0;
+}
+
+.regular {
+  padding: 10px 26px;
+  font-size: 14px;
+  width: 5rem;
+}

@@ -1,15 +1,18 @@
 import { ReactElement } from 'react';
-
+import './Button.css';
 interface ButtonProps {
-  text: string;
-  onClick: () => void;
+  children: React.ReactNode;
+  size: 'regular';
+  color: 'blue';
 }
 
-const Button = ({ text, onClick }: ButtonProps): ReactElement => {
+const Button = ({ children, size, color }: ButtonProps): ReactElement => {
   return (
-    <button type="button" onClick={onClick}>
-      {text}
-    </button>
+    <div className="button-container">
+      <button type="submit" className={`form-button ${size} ${color}`}>
+        {children}
+      </button>
+    </div>
   );
 };
 
