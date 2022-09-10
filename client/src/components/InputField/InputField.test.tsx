@@ -14,7 +14,7 @@ test('InputField', async () => {
       onChange={mockChange}
       type="text"
       name="name"
-      errors={undefined}
+      errors="Name is required"
       disabled={false}
     />
   );
