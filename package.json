@@ -2,5 +2,10 @@
   "name": "brainhub",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "install": "(cd server && yarn) && (cd client && yarn)",
+    "heroku-postbuild": "(cd client && yarn run build) && (cd server && yarn run build)",
+    "start": "cd server && yarn run start"
+  }
 }
