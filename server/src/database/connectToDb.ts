@@ -9,7 +9,9 @@ const connectToDb = (): Knex => {
       user: process.env.PGUSER,
       password: process.env.PGPASSWORD,
       database: process.env.PGDATABASE,
-      ssl: { rejectUnauthorized: false },
+      ...(process.env.NODE_ENV == 'development'
+        ? ''
+        : { ssl: { rejectUnauthorized: false } }),
     },
   });
 };

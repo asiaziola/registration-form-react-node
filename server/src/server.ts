@@ -19,7 +19,16 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   next();
 });
-app.use(express.static(path.resolve(__dirname, '../../../client/build')));
+app.use(
+  express.static(
+    path.resolve(
+      __dirname,
+      process.env.NODE_ENV == 'development'
+        ? '../../client/build'
+        : '../../../client/build'
+    )
+  )
+);
 
 app.use(bodyParser.json());
 app.use(
@@ -31,7 +40,15 @@ app.use(express.json());
 app.use(appRouter);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../../../client/build', 'index.html'));
+  res.sendFile(
+    path.resolve(
+      __dirname,
+      process.env.NODE_ENV == 'development'
+        ? '../../../client/build'
+        : '../../../client/build',
+      'index.html'
+    )
+  );
 });
 
 app.listen(port, function () {
