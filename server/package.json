@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node dist/src/server.js",
-    "build": "cd ../client && yarn run build",
+    "start:dev": "ts-node src/server.ts",
+    "build": "yarn build:server && cd ../client && yarn run build",
     "build:server": "rm -rf dist && tsc",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
