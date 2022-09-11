@@ -34,15 +34,23 @@ const User = (): ReactElement => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ resolver: yupResolver(userSchema) });
+  } = useForm({
+    resolver: yupResolver(userSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      date: new Date().toISOString().substring(0, 10),
+    },
+  });
 
-  useEffect(() => {
-    let defaultValues: any = {};
-    defaultValues.date = new Date().toISOString().substring(0, 10);
-    reset({ ...defaultValues });
-  }, [reset]);
+  // useEffect(() => {
+  //   let defaultValues: any = {};
+  //   defaultValues.date = new Date().toISOString().substring(0, 10);
+  //   reset({ ...defaultValues });
+  // }, [reset]);
 
-  const handleRegistration = async (data: any) => {
+  const handleRegistration = async (data: any, e: any) => {
     setLoading(true);
     const user = {
       firstName: data.firstName,
@@ -55,6 +63,7 @@ const User = (): ReactElement => {
       .then(() => {
         setLoading(false);
         setSubmitted(true);
+        reset();
         setTimeout(() => {
           setSubmitted(false);
         }, 3000);
@@ -67,19 +76,6 @@ const User = (): ReactElement => {
         setLoading(false);
       });
   };
-
-  // const registerOptions = {
-  //   firstName: { required: 'First name is a required field' },
-  //   lastName: { required: 'Last name is a required field' },
-  //   email: {
-  //     required: 'Email is a required field',
-  //     pattern: {
-  //       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-  //       message: 'Email must be valid',
-  //     },
-  //   },
-  //   date: { required: 'Date is required' },
-  // };
 
   return (
     <>
