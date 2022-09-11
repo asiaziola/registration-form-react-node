@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "node src/server.ts",
     "build:client": "yarn build:server && cd ../client && yarn run build",
     "build": "rm -rf dist && tsc",
     "format:check": "prettier --check .",
