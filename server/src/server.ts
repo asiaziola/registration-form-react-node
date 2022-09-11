@@ -51,8 +51,10 @@ app.get('*', (req, res) => {
   );
 });
 
-app.listen(port, function () {
-  console.log(`App listening on port: ${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, function () {
+    console.log(`App listening on port: ${port}`);
+  });
+}
 
 export default app;

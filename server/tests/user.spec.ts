@@ -1,4 +1,5 @@
 import request from 'supertest';
+import { db } from '../src/database/connectToDb';
 import app from '../src/server';
 
 jest.mock('../src/database/connectToDb', () => {
