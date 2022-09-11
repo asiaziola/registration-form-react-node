@@ -9,10 +9,9 @@
     "start": "cd server && yarn run start"
   },
   "dependencies": {
-    "typescript": "^4.8.3"
-  },
-  "devDependencies": {
+    "typescript": "^4.8.3",
     "@types/jest": "^29.0.0",
-    "@types/node": "^18.7.16"
+    "@types/node": "^18.7.16",
+    "ts-node": "^10.9.1"
   }
 }
