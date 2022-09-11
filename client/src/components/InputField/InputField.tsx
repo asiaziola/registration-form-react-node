@@ -14,7 +14,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
   ({ label, name, placeholder, type, onChange, errors, disabled }: InputFieldProps, ref) => (
     <>
       <div className="input-group">
-        {label && <label>{label}</label>}
+        {label && <label id={name}>{label}</label>}
         <input
           ref={ref}
           type={type}
@@ -23,6 +23,7 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
           placeholder={placeholder}
           onChange={onChange}
           disabled={disabled}
+          aria-labelledby={name}
         />
       </div>
       <div className="errors-container">{errors}</div>
