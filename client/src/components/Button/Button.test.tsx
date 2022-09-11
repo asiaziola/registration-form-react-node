@@ -2,18 +2,39 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Button from './Button';
 
-test('Button', async () => {
-  const onSubmit = jest.fn((e) => e.preventDefault());
+describe('Button', () => {
+  test('is visible on the screen', () => {
+    const onSubmit = jest.fn((e) => e.preventDefault());
 
-  render(<Button children="Submit" color="blue" size="regular" />, {
-    wrapper: ({ children }) => <form onSubmit={onSubmit}>{children}</form>,
+    render(<Button children="Submit" color="blue" size="regular" />, {
+      wrapper: ({ children }) => <form onSubmit={onSubmit}>{children}</form>,
+    });
+
+    const buttonElement = screen.getByText('Submit');
+    expect(buttonElement).toBeInTheDocument();
   });
 
-  const buttonElement = screen.getByText('Submit');
-  expect(buttonElement).toBeInTheDocument();
-  expect(buttonElement.classList.contains('blue')).toBe(true);
-  expect(buttonElement.classList.contains('regular')).toBe(true);
+  test('has proper classes', () => {
+    const onSubmit = jest.fn((e) => e.preventDefault());
 
-  userEvent.click(buttonElement);
-  expect(onSubmit).toBeCalled();
+    render(<Button children="Submit" color="blue" size="regular" />, {
+      wrapper: ({ children }) => <form onSubmit={onSubmit}>{children}</form>,
+    });
+
+    const buttonElement = screen.getByText('Submit');
+    expect(buttonElement.classList.contains('blue')).toBe(true);
+    expect(buttonElement.classList.contains('regular')).toBe(true);
+  });
+
+  test('calls onSubmit function when clicked', () => {
+    const onSubmit = jest.fn((e) => e.preventDefault());
+
+    render(<Button children="Submit" color="blue" size="regular" />, {
+      wrapper: ({ children }) => <form onSubmit={onSubmit}>{children}</form>,
+    });
+
+    const buttonElement = screen.getByText('Submit');
+    userEvent.click(buttonElement);
+    expect(onSubmit).toBeCalled();
+  });
 });
