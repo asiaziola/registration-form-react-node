@@ -5,6 +5,24 @@ import Button from '../../components/Button/Button';
 import Form from '../../components/Form/Form';
 import InputField from '../../components/InputField/InputField';
 import './User.css';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const userSchema = yup
+  .object()
+  .shape({
+    firstName: yup
+      .string()
+      .required('First name is a required field')
+      .matches(/^[aA-zZ\s]+$/, 'First name should contain only letters'),
+    lastName: yup
+      .string()
+      .required('Last name is a required field')
+      .matches(/^[aA-zZ\s]+$/, 'Last name should contain only letters'),
+    email: yup.string().required('Email is a required field').email('Email must be valid'),
+    date: yup.date().required('Date is a required field'),
+  })
+  .required();
 
 const User = (): ReactElement => {
   const [loading, setLoading] = useState(false);
@@ -16,7 +34,7 @@ const User = (): ReactElement => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm();
+  } = useForm({ resolver: yupResolver(userSchema) });
 
   useEffect(() => {
     let defaultValues: any = {};
@@ -39,28 +57,29 @@ const User = (): ReactElement => {
         setSubmitted(true);
         setTimeout(() => {
           setSubmitted(false);
-        }, 1000);
+        }, 3000);
       })
       .catch((e) => {
         setErrorResult({ error: true, message: e.message });
         setTimeout(() => {
           setErrorResult({ error: false, message: '' });
-        }, 1000);
+        }, 3000);
+        setLoading(false);
       });
   };
 
-  const registerOptions = {
-    firstName: { required: 'First name is required' },
-    lastName: { required: 'Last name is required' },
-    email: {
-      required: 'Email is required',
-      pattern: {
-        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-        message: 'Invalid email address',
-      },
-    },
-    date: { required: 'Date is required' },
-  };
+  // const registerOptions = {
+  //   firstName: { required: 'First name is a required field' },
+  //   lastName: { required: 'Last name is a required field' },
+  //   email: {
+  //     required: 'Email is a required field',
+  //     pattern: {
+  //       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+  //       message: 'Email must be valid',
+  //     },
+  //   },
+  //   date: { required: 'Date is required' },
+  // };
 
   return (
     <>
@@ -70,7 +89,7 @@ const User = (): ReactElement => {
             type="text"
             placeholder="First name"
             label="First name"
-            {...register('firstName', registerOptions.firstName)}
+            {...register('firstName')}
             errors={errors?.firstName && errors.firstName.message}
             disabled={loading}
           />
@@ -80,7 +99,7 @@ const User = (): ReactElement => {
             type="text"
             placeholder="Last name"
             label="Last name"
-            {...register('lastName', registerOptions.lastName)}
+            {...register('lastName')}
             errors={errors?.lastName && errors.lastName.message}
             disabled={loading}
           />
@@ -90,14 +109,14 @@ const User = (): ReactElement => {
             type="email"
             placeholder="Email"
             label="Email"
-            {...register('email', registerOptions.email)}
+            {...register('email')}
             errors={errors?.email && errors.email.message}
             disabled={loading}
           />
           <InputField
             type="date"
             label="Date"
-            {...register('date', registerOptions.date)}
+            {...register('date')}
             errors={errors?.date && errors.date.message}
             disabled={loading}
           />

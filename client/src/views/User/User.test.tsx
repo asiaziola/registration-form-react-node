@@ -10,6 +10,7 @@ describe('User', () => {
   beforeEach(() => {
     mockedAxios.post.mockResolvedValue({});
   });
+
   test('it should render basic fields', () => {
     render(<User />);
     expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
@@ -44,7 +45,7 @@ describe('User', () => {
     userEvent.click(buttonElement);
 
     await waitFor(() => {
-      expect(screen.getByText('First name is required')).toBeInTheDocument();
+      expect(screen.getByText('First name is a required field')).toBeInTheDocument();
     });
   });
 
@@ -73,7 +74,7 @@ describe('User', () => {
     userEvent.click(buttonElement);
 
     await waitFor(() => {
-      expect(screen.getByText('Last name is required')).toBeInTheDocument();
+      expect(screen.getByText('Last name is a required field')).toBeInTheDocument();
     });
   });
 
@@ -102,7 +103,7 @@ describe('User', () => {
     userEvent.click(buttonElement);
 
     await waitFor(() => {
-      expect(screen.getByText('Email is required')).toBeInTheDocument();
+      expect(screen.getByText('Email is a required field')).toBeInTheDocument();
     });
   });
 
@@ -137,7 +138,7 @@ describe('User', () => {
     userEvent.click(buttonElement);
 
     await waitFor(() => {
-      expect(screen.getByText('Invalid email address')).toBeInTheDocument();
+      expect(screen.getByText('Email must be valid')).toBeInTheDocument();
     });
   });
 
@@ -173,7 +174,7 @@ describe('User', () => {
     await waitFor(() =>
       expect(axios.post).toHaveBeenCalledWith('/api/users', {
         email: 'email@test.pl',
-        eventDate: '2022-10-09',
+        eventDate: new Date('2022-10-08T22:00:00.000Z'),
         firstName: 'John',
         lastName: 'Doe',
       })
