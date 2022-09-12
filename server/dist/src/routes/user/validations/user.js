@@ -6,6 +6,6 @@ exports.validations = [
     (0, express_validator_1.body)('firstName').exists().isString().notEmpty(),
     (0, express_validator_1.body)('lastName').exists().isString().notEmpty(),
     (0, express_validator_1.body)('email').exists().isEmail().notEmpty(),
-    (0, express_validator_1.body)('eventDate').exists().isDate().notEmpty(),
+    (0, express_validator_1.body)('eventDate').exists().isISO8601().toDate().notEmpty(),
 ];
 //# sourceMappingURL=user.js.map

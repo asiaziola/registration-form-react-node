@@ -29,7 +29,9 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     next();
 });
-app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../../client/build')));
+app.use(express_1.default.static(path_1.default.resolve(__dirname, process.env.NODE_ENV == 'development'
+    ? '../../client/build'
+    : '../../../client/build')));
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({
     extended: true,
@@ -37,10 +39,14 @@ app.use(body_parser_1.default.urlencoded({
 app.use(express_1.default.json());
 app.use(index_1.appRouter);
 app.get('*', (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, '../../../client/build', 'index.html'));
+    res.sendFile(path_1.default.resolve(__dirname, process.env.NODE_ENV == 'development'
+        ? '../../../client/build'
+        : '../../../client/build', 'index.html'));
 });
-app.listen(port, function () {
-    console.log(`App listening on port: ${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, function () {
+        console.log(`App listening on port: ${port}`);
+    });
+}
 exports.default = app;
 //# sourceMappingURL=server.js.map
