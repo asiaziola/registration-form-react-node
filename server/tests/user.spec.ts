@@ -1,4 +1,5 @@
 import request from 'supertest';
+import * as userService from '../src/routes/user/service/user';
 import app from '../src/server';
 
 jest.mock('../src/database/connectToDb', () => {
@@ -18,42 +19,43 @@ jest.mock('../src/database/connectToDb', () => {
 });
 
 describe('/api/users', () => {
-  beforeAll(async () => {});
-
-  afterAll((done) => {
-    jest.resetAllMocks();
-    done();
-  });
-
   describe('GET when there are no records', () => {
     test('should respond with a 200 status code', async () => {
-      setTimeout(async () => {
-        const response = await request(app)
-          .get('/api/users')
-          .expect('Content-Type', /json/);
+      const response = await request(app).get('/api/users');
 
-        expect(response.statusCode).toBe(200);
-        expect(response.body).toBe([]);
-      }, 1000);
+      expect(response.statusCode).toBe(200);
+    });
+
+    test('should return empty array', async () => {
+      const response = await request(app).get('/api/users');
+
+      expect(response.body).toStrictEqual([]);
+    });
+
+    test('should catch an error', async () => {
+      jest.spyOn(userService, 'getUsers').mockImplementationOnce(() => {
+        throw new Error('some error');
+      });
+
+      const response = await request(app).get('/api/users');
+
+      expect(response.body).toStrictEqual({ errors: 'some error' });
     });
   });
 
   describe('POST given correct data', () => {
     test('should respond with a 200 status code', async () => {
-      setTimeout(async () => {
-        const response = await request(app)
-          .post('/api/users')
-          .send({
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'john.doe@email.com',
-            eventDate: '2020-10-09',
-          })
-          .set('Accept', 'application/json')
-          .expect('Content-Type', /json/);
+      const response = await request(app)
+        .post('/api/users')
+        .send({
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john.doe@email.com',
+          eventDate: '2020-10-09',
+        })
+        .set('Accept', 'application/json');
 
-        expect(response.statusCode).toBe(200);
-      });
+      expect(response.statusCode).toBe(200);
     });
 
     test('should specify json in the content type header', async () => {
@@ -68,22 +70,23 @@ describe('/api/users', () => {
       );
     });
 
-    test('response should have proper field', async () => {
+    test('response should have proper fields', async () => {
       const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@email.com',
         eventDate: '2020-10-09',
       });
+
       expect(response.body.first_name).toEqual('John');
       expect(response.body.last_name).toEqual('Doe');
       expect(response.body.email).toEqual('john.doe@email.com');
-      expect(response.body.event_date).toEqual('2020-10-09');
+      expect(response.body.event_date).toEqual('2020-10-09T00:00:00.000Z');
     });
   });
 
   describe('POST when the data is missing', () => {
-    test('should respond with a status code of 400 when eventDate is missing', async () => {
+    test('should respond with a status code of 400 and errors body when eventDate is missing', async () => {
       const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
@@ -99,7 +102,7 @@ describe('/api/users', () => {
       });
     });
 
-    test('should respond with a status code of 400 when email is missing', async () => {
+    test('should respond with a status code of 400 and errors body when email is missing', async () => {
       const response = await request(app).post('/api/users').send({
         firstName: 'John',
         lastName: 'Doe',
@@ -115,7 +118,7 @@ describe('/api/users', () => {
       });
     });
 
-    test('should respond with a status code of 400 when lastName is missing', async () => {
+    test('should respond with a status code of 400 and errors body when lastName is missing', async () => {
       const response = await request(app).post('/api/users').send({
         firstName: 'John',
         email: 'john.doe@email.com',
@@ -149,7 +152,7 @@ describe('/api/users', () => {
   });
 
   describe('POST when data is incorrect', () => {
-    test('should respond with a status code of 400 when firstName is invalid', async () => {
+    test('should respond with a status code of 400 and errors body when firstName is invalid', async () => {
       const response = await request(app).post('/api/users').send({
         firstName: 123,
         lastName: 'Doe',
@@ -218,17 +221,33 @@ describe('/api/users', () => {
     });
   });
 
+  describe('POST when error', () => {
+    test('should catch an error', async () => {
+      jest.spyOn(userService, 'addUser').mockImplementationOnce(() => {
+        throw new Error('some error');
+      });
+
+      const response = await request(app).post('/api/users').send({
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@email.com',
+        eventDate: '2020-10-09',
+      });
+
+      expect(response.body).toStrictEqual({ errors: 'some error' });
+    });
+  });
+
   describe('GET when there are records', () => {
     test('should respond with a 200 status code', async () => {
-      const response = await request(app)
-        .get('/api/users')
-        .expect('Content-Type', /json/);
+      const response = await request(app).get('/api/users');
 
       expect(response.statusCode).toBe(200);
       expect(response.body).toStrictEqual([
         {
           email: 'john.doe@email.com',
-          event_date: '2020-10-09',
+          event_date:
+            'Fri Oct 09 2020 02:00:00 GMT+0200 (Central European Summer Time)',
           first_name: 'John',
           id: 1,
           last_name: 'Doe',
