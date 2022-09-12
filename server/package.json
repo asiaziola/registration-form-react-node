@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/src/server.js",
     "start:dev": "NODE_ENV=development ts-node src/server.ts",
+    "start:cypress": "NODE_ENV=cypress PORT=8080 node dist/src/server.js",
     "build:client": "cd ../client && yarn install && yarn run build",
     "build": "rm -rf dist && tsc",
     "format:check": "prettier --check .",

@@ -44,12 +44,6 @@ const User = (): ReactElement => {
     },
   });
 
-  // useEffect(() => {
-  //   let defaultValues: any = {};
-  //   defaultValues.date = new Date().toISOString().substring(0, 10);
-  //   reset({ ...defaultValues });
-  // }, [reset]);
-
   const handleRegistration = async (data: any, e: any) => {
     setLoading(true);
     const user = {
